@@ -8,9 +8,9 @@ const Button = ({name, onClick}) => {
   )
 }
 
-const Display = ({name, count}) => {
+const StatisticLine = ({name, value}) => {
   return (
-    <div>{name} {count}</div>
+    <div>{name} {value}</div>
   )
 }
 
@@ -21,14 +21,14 @@ const Statistics = ({good, neutral, bad}) => {
   
   if (all != 0) {
     return (
-      <>
-        <Display name="good" count={good} />
-        <Display name="neutral" count={neutral} />
-        <Display name="bad" count={bad} />
-        <Display name="all" count={all} />
-        <Display name="average" count={avg} />
-        <div>positive {positive} %</div>
-      </>
+      <div>
+        <StatisticLine name="good" value={good} />
+        <StatisticLine name="neutral" value={neutral} />
+        <StatisticLine name="bad" value={bad} />
+        <StatisticLine name="all" value={all} />
+        <StatisticLine name="average" value={avg} />
+        <StatisticLine  name="positive" value={positive + " %"}/>
+      </div>
     )
   } else {
     return (
