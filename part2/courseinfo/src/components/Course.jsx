@@ -5,7 +5,7 @@ import Total from "./Total"
 const Course = ({course}) => {
 
     const total = course.parts.reduce((sum, part) => sum += part.exercises, 0)
-
+    
     return (
        <div>
         <Header course={course.name} />
