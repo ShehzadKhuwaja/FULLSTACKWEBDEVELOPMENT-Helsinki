@@ -3,6 +3,8 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personService from './services/note'
+
 
 
 const App = () => {
@@ -37,18 +39,22 @@ const App = () => {
   
     const newNameobject = {
       name: newName,
-      number: newNumber,
-      id: persons.length + 1
+      number: newNumber
     }
 
-    setPersons(persons.concat(newNameobject))
-    setNewName('') 
-    setNewNumber('')
+    personService
+    .create(newNameobject)
+    .then(response => {
+      setPersons(persons.concat(response.data))
+      setNewName('') 
+      setNewNumber('')
+    })
+
   }
 
   useEffect(() => {
-    axios
-    .get("http://localhost:3001/persons")
+    personService
+    .getAll()
     .then(response => {
       setPersons(response.data)
     })
