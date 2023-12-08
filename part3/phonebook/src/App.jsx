@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -33,8 +32,27 @@ const App = () => {
     event.preventDefault()
 
     if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to the phonebook`)
+      const message = `${newName} is already added to the phonebook, replace the old number with a new one?`
+      
+      if (!window.confirm(message)) {
+        setNewName('') 
+        setNewNumber('')
+        return
+      }
+
+      const objectToUpdate = persons.find((person) => person.name === newName)
+      const updatedObject = { ...objectToUpdate, number: newNumber}
+
+      personService
+      .update(objectToUpdate.id, updatedObject)
+      .then(response => {
+        setPersons(persons.map(person => person.id !== objectToUpdate.id ? person : response.data ))
+        setNewName('') 
+        setNewNumber('')
+      })
+
       return
+
     }
   
     const newNameobject = {
@@ -60,6 +78,10 @@ const App = () => {
     })
   }, [])
 
+  const handleDelete = id => {
+    setPersons(persons.filter(person => person.id !== id))
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -78,7 +100,7 @@ const App = () => {
       
       <h2>Numbers</h2>
       
-      <Persons filteredPhoneBook={filteredPhoneBook} />
+      <Persons filteredPhoneBook={filteredPhoneBook} onDelete={handleDelete}/>
 
     </div>
   )

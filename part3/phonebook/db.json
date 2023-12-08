@@ -6,29 +6,19 @@
       "id": 1
     },
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": 2
-    },
-    {
       "name": "Dan Abramov",
       "number": "12-43-234345",
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
+      "name": "flash",
+      "number": "400-010-100",
       "id": 4
     },
     {
       "name": "Batman",
-      "number": "00115-456-231",
+      "number": "400-xxx-999",
       "id": 5
-    },
-    {
-      "name": "flash",
-      "number": "300-0000-000",
-      "id": 6
     }
   ]
 }
