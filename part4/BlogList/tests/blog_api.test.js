@@ -118,6 +118,48 @@ test('if the title or url properties are missing from the request data, respond 
         .expect(400)
 })
 
+describe('deletion of a blog', () => {
+    test('succeeds with the status code of 204 if id is valid', async () => {
+        const BlogsAtStart = await helper.blogsInDb()
+        const BlogToDelete = BlogsAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${BlogToDelete.id}`)
+            .expect(204)
+
+        const BlogsAtEnd = await helper.blogsInDb()
+        expect(BlogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+        const titles = BlogsAtEnd.map(blog => blog.title)
+
+        expect(titles).not.toContain(BlogToDelete.title) 
+    })
+})
+
+describe('updation of a blog', () => {
+    test('succeeds with the status code of 200 if a valid update is performed', async () => {
+        const BlogsAtStart = await helper.blogsInDb()
+
+        const BlogToUpdate = {
+            title: BlogsAtStart[0].title,
+            author: BlogsAtStart[0].author,
+            url: BlogsAtStart[0].url,
+            likes: 200
+        }
+        
+        const response = await api
+                            .put(`/api/blogs/${BlogsAtStart[0].id}`)
+                            .send(BlogToUpdate)
+                            .expect(200)
+                            .expect('Content-Type', /application\/json/)
+
+        const BlogsAtEnd = await helper.blogsInDb()
+        expect(BlogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+        expect(response.body).toEqual({...BlogToUpdate, id: BlogsAtStart[0].id})
+    })
+})
+
 
 afterAll(async () => {
     await mongoose.connection.close()
