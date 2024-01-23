@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY1YTk2NGQwNDVkOWZlNWMxYjRiZmRlNSIsImlhdCI6MTcwNTgyNjA5NX0.TvlkFdK424D3FuLwO8XgTOM4ff58jdp9ZaCsVb3BvwA
 
 {
-   "title": "Be Happy",
-   "author": "Angry bird",
-   "url": "https://en.wikipedia.org/wiki/Batman",
-   "likes": 10
+   "title": "Test Driven Development",
+   "author": "Arto Hellas",
+   "url": "https://fullstackopen.com/en/part4/token_authentication#limiting-creating-new-notes-to-logged-in-users",
+   "likes": 20032
 }
