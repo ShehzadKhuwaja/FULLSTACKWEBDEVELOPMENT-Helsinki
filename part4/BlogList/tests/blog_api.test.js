@@ -8,12 +8,24 @@ const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+let token = null
 beforeEach(async () => {
+    await User.deleteMany({});
+    const passwordHash = await bcrypt.hash('testuser', 10) 
+    const user = new User({ username: 'testuser', name: 'testuser', password: passwordHash})
+    const savedUser = await user.save()
+
+    const userToken = {
+        username: 'testuser',
+        id: savedUser._id
+    }
+    token = jwt.sign(userToken, process.env.SECRET)
+
     await Blog.deleteMany({})
     const blogObject = helper.initialBlogs.map(blog => new Blog(blog))
     const promiseArray = blogObject.map(blog => blog.save())
     await Promise.all(promiseArray)
-})
+}, 100000)
 
 test('blogs are returned as json', async () => {
     await api
@@ -37,20 +49,6 @@ test('a specific blog is within the returned blogs', async () => {
 })
 
 describe('addition of a blog', () => {
-    let token = null
-    beforeAll(async () => {
-        await User.deleteMany({});
-        const passwordHash = await bcrypt.hash('testuser', 10) 
-        const user = new User({ username: 'testuser', name: 'testuser', password: passwordHash})
-        const savedUser = await user.save()
-
-        const userToken = {
-            username: 'testuser',
-            id: savedUser._id
-        }
-        token = jwt.sign(userToken, process.env.SECRET)
-    })
-
     test('a valid blog can be added', async () => {
         const newBlog = {
             title: 'Testing is Essential part of Software Development',
@@ -166,20 +164,8 @@ test('unique identifier property of the blog posts should be named as id', async
 
 
 describe('deletion of a blog', () => {
-    let token = null
-    beforeEach(async () => {
-        await User.deleteMany({})
-        await Blog.deleteMany({})
-
-        const passwordHash = await bcrypt.hash('testuser', 10) 
-        const user = new User({ username: 'testuser', name: 'testuser', password: passwordHash})
-        const savedUser = await user.save()
-
-        const userToken = {
-            username: 'testuser',
-            id: savedUser._id
-        }
-        token = jwt.sign(userToken, process.env.SECRET)
+    test('succeeds with the status code of 204 if id is valid', async () => {
+        const BlogsAtStart = await helper.blogsInDb()
 
         const newBlog = {
             title: 'Testing is Essential part of Software Development',
@@ -187,29 +173,24 @@ describe('deletion of a blog', () => {
             url: 'https://en.wikipedia.org/wiki/Software_testing',
         }
     
-        await api
+        const response = await api
             .post('/api/blogs')
             .send(newBlog)
             .set({ Authorization: `bearer ${token}` })
             .expect(201)
             .expect('Content-Type', /application\/json/)
 
-    })
-    test('succeeds with the status code of 204 if id is valid', async () => {
-        const BlogsAtStart = await helper.blogsInDb()
-        const BlogToDelete = BlogsAtStart[0]
-
         await api
-            .delete(`/api/blogs/${BlogToDelete.id}`)
+            .delete(`/api/blogs/${response.body.id}`)
             .set({ Authorization: `bearer ${token}` })
             .expect(204)
 
         const BlogsAtEnd = await helper.blogsInDb()
-        expect(BlogsAtEnd).toHaveLength(BlogsAtStart.length - 1)
+        expect(BlogsAtEnd).toHaveLength(BlogsAtStart.length)
 
         const titles = BlogsAtEnd.map(blog => blog.title)
 
-        expect(titles).not.toContain(BlogToDelete.title) 
+        expect(titles).not.toContain(response.body.title) 
     })
 })
 
