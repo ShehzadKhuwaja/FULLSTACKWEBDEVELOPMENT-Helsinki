@@ -1,0 +1,24 @@
+{
+  "persons": [
+    {
+      "name": "Arto Hellas",
+      "number": "040-123456",
+      "id": 1
+    },
+    {
+      "name": "Dan Abramov",
+      "number": "12-43-234345",
+      "id": 3
+    },
+    {
+      "name": "flash",
+      "number": "400-010-100",
+      "id": 4
+    },
+    {
+      "name": "Batman",
+      "number": "999-0000-99",
+      "id": 5
+    }
+  ]
+}
