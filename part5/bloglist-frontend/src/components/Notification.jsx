@@ -8,8 +8,8 @@ const Notification = ({ message, type }) => {
         padding: 10,
         marginBottom: 10
     }
-    
-      const errorNotificiationStyle = {
+
+    const errorNotificiationStyle = {
         color: 'red',
         background: 'lightgrey',
         fontSize: 20,
