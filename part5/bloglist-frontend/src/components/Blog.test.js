@@ -10,7 +10,7 @@ beforeEach(() => {
         title: 'testing blog one',
         author: 'tester',
         url: 'https://google.com',
-        user: {username: 'tester'},
+        user: { username: 'tester' },
         likes: 0
     }
 
@@ -23,7 +23,7 @@ beforeEach(() => {
 
 test('blog renders the blog\'s title and author, but does not render its URL or number of likes by default.', () => {
     const div = container.querySelector('.bloginfo')
-    
+
     expect(div).toHaveTextContent(
         `${blog.title} ${blog.author}`
     )
@@ -36,7 +36,7 @@ test('blog\'s URL and number of likes are shown when the show button isclicked.'
     const user = userEvent.setup()
     const button = screen.getByText('view')
     await user.click(button)
-    
+
     const div = container.querySelector('.bloginfo')
 
     expect(div).toHaveTextContent(

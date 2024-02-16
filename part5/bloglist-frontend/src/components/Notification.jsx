@@ -21,7 +21,7 @@ const Notification = ({ message, type }) => {
 
     if (message) {
         return (
-            <div style={type === 'success' ? successNotificationStyle : errorNotificiationStyle}>{ message }</div>
+            <div style={type === 'success' ? successNotificationStyle : errorNotificiationStyle} id='message'>{ message }</div>
         )
     } else {
         return null
