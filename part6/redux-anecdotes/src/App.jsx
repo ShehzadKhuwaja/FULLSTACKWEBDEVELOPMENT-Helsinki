@@ -6,13 +6,12 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import anecdoteService from './services/anecdotes'
 import { setAnec } from './reducers/anecdoteReducer'
+import { initializeAnecdote } from './reducers/anecdoteReducer'
 
 const App = () => {
   const dispatch = useDispatch()
   useEffect(() => {
-    anecdoteService.getAll().then(anecdotes => {
-      dispatch(setAnec(anecdotes))
-    })
+    dispatch(initializeAnecdote())
   }, [])
 
   return (
