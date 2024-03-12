@@ -1,17 +1,22 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import anecdoteService from './services/anecdote'
+import { useMessageDispatch } from './notificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const dispatchMessage = useMessageDispatch()
 
   const newVoteMutation = useMutation({
     mutationFn: anecdoteService.updateVote,
     onSuccess: (anecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.map(anec => anec.id !== anecdote.id ? anec: anecdote))
+      dispatchMessage({ type: 'notify', payload: `anecdote '${anecdote.content}' voted` })
+      setTimeout(() => {
+        dispatchMessage({ type: 'notify', payload: null })
+      }, 5000);
     }
   })
 
