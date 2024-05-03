@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import notificationReducer from './reducers/notificationReducer'
+import blogReducer from './reducers/blogReducer'
+import authenticationReducer from './reducers/authenticationReducer'
 
 
 const store = configureStore({
     reducer: {
-        message: notificationReducer
+        message: notificationReducer,
+        blogs: blogReducer,
+        auth: authenticationReducer 
     }
 })
 

@@ -1,8 +1,24 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { deleteBlog, updateBlog } from '../reducers/blogReducer'
+import { useDispatch } from 'react-redux'
 
-const Blog = ({ blog, handleLike, handleDelete, user }) => {
+
+const Blog = ({ blog, user }) => {
     const [visible, setVisible] = useState(false)
+    const dispatch = useDispatch()
+
+    const handleLike = () => {
+        const updatedBlog = { ...blog, likes: blog.likes + 1 }
+        dispatch(updateBlog(blog.id, updatedBlog))
+    }
+
+    const handleDelete = () => {
+        const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+        if (confirmation) {
+            dispatch(deleteBlog(blog))
+        }
+    }
 
     const blogStyle = {
         paddingTop: 10,
@@ -33,8 +49,6 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
 }
 
 Blog.propTypes = {
-    handleLike: PropTypes.func.isRequired,
-    handleDelete: PropTypes.func.isRequired,
     user: PropTypes.string.isRequired,
     blog: PropTypes.object.isRequired
 }
