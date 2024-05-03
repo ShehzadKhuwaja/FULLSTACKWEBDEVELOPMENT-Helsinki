@@ -1,6 +1,38 @@
 import PropTypes from 'prop-types'
+import { useUserDispatch, setUser } from '../AuthenticationContent'
+import loginService from '../services/login'
+import blogService from '../services/blogs'
+import { setnotification, unsetNotification, useMessageDispatch } from '../NotificationContext'
+import { useState } from 'react'
 
-const LoginForm = ({ handleLogin, username, password, handleUsernameChange, handlePasswordChange }) => {
+
+const LoginForm = () => {
+    const [username, setUserName] = useState('')
+    const [password, setPassword] = useState('')
+    const messageDispatch = useMessageDispatch()
+    const userDispatch = useUserDispatch()
+
+    const handleLogin = async (event) => {
+        event.preventDefault()
+        try {
+            const user = await loginService.login({
+                username, password
+            })
+
+            window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+
+            blogService.setToken(user.token)
+            userDispatch(setUser(user))
+            setUserName('')
+            setPassword('')
+        } catch (exception) {
+            messageDispatch(setnotification('Wrong username or password', 'error'))
+            setTimeout(() => {
+                messageDispatch(unsetNotification())
+            }, 5000)
+        }
+    }
+
     return (
         <>
             <h1>log in to application</h1>
@@ -11,7 +43,7 @@ const LoginForm = ({ handleLogin, username, password, handleUsernameChange, hand
                         type='text'
                         value={username}
                         name='Username'
-                        onChange={handleUsernameChange}
+                        onChange={({ target }) => setUserName(target.value)}
                         id='username'
                     />
                 </div>
@@ -21,7 +53,7 @@ const LoginForm = ({ handleLogin, username, password, handleUsernameChange, hand
                         type='password'
                         value={password}
                         name='Password'
-                        onChange={handlePasswordChange}
+                        onChange={({ target }) => setPassword(target.value)}
                         id='password'
                     />
                 </div>
@@ -29,14 +61,6 @@ const LoginForm = ({ handleLogin, username, password, handleUsernameChange, hand
             </form>
         </>
     )
-}
-
-LoginForm.propTypes = {
-    handleLogin: PropTypes.func.isRequired,
-    username: PropTypes.string.isRequired,
-    password: PropTypes.string.isRequired,
-    handleUsernameChange: PropTypes.func.isRequired,
-    handlePasswordChange: PropTypes.func.isRequired
 }
 
 export default LoginForm

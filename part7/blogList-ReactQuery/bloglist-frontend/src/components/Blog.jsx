@@ -1,8 +1,47 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import blogService from '../services/blogs'
+import { setnotification, unsetNotification, useMessageDispatch } from '../NotificationContext'
 
-const Blog = ({ blog, handleLike, handleDelete, user }) => {
+const Blog = ({ blog, user }) => {
     const [visible, setVisible] = useState(false)
+    const queryClient = useQueryClient()
+    const messageDispatch = useMessageDispatch()
+
+    const updateBlogMutation = useMutation({
+        mutationFn: blogService.update,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['blogs'] })
+            messageDispatch(setnotification(`You Liked ${blog.title} blog`, 'success'))
+            setTimeout(() => {
+                messageDispatch(unsetNotification())
+            }, 5000)
+        },
+        onError: () => {
+            messageDispatch(setnotification(`Blog '${blog.title}' was already removed from server`, 'error'))
+            setTimeout(() => {
+                messageDispatch(unsetNotification())
+            }, 5000)
+        }
+    })
+
+    const deleteBlogMutation = useMutation({
+        mutationFn: blogService.deleteBlog,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['blogs'] })
+            messageDispatch(setnotification(`Blog ${blog.title} deleted`, 'success'))
+            setTimeout(() => {
+                messageDispatch(unsetNotification())
+            }, 5000)
+        },
+        onError: () => {
+            messageDispatch(setnotification('Unauthorized to delete this blog', 'error'))
+            setTimeout(() => {
+                messageDispatch(unsetNotification())
+            }, 5000)
+        }
+    })
 
     const blogStyle = {
         paddingTop: 10,
@@ -15,6 +54,15 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
     const removeStyle = {
         background: 'lightblue',
         borderRadius: 5,
+    }
+
+    const handleLike = () => {
+        updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 })
+    }
+
+    const handleDelete = () => {
+        const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+        if (confirmation) deleteBlogMutation.mutate(blog.id)
     }
 
     return (
@@ -33,8 +81,6 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
 }
 
 Blog.propTypes = {
-    handleLike: PropTypes.func.isRequired,
-    handleDelete: PropTypes.func.isRequired,
     user: PropTypes.string.isRequired,
     blog: PropTypes.object.isRequired
 }
