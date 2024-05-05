@@ -7,12 +7,29 @@ import Togglabel from './components/Togglabel'
 import { useDispatch, useSelector } from 'react-redux'
 import BlogList from './components/BlogList'
 import { setUser } from './reducers/authenticationReducer'
+import { Routes, Link, Route } from 'react-router-dom'
+import User from './components/User'
+
+const Home = ({ user }) => {
+    const blogFormRef = useRef()
+
+    return (
+        <>
+            {user && <div>
+                    <Togglabel buttonLabel='create new blog' ref={blogFormRef}>
+                        <BlogForm blogFormRef={blogFormRef}/>
+                    </Togglabel>
+                </div>
+            }
+
+            <BlogList user={user.username}/>
+        </>
+    )
+}
 
 const App = () => {
     const user = useSelector(state => state.auth)
     const dispatch = useDispatch()
-
-    const blogFormRef = useRef()
 
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -29,6 +46,8 @@ const App = () => {
         dispatch(setUser(null))
     }
 
+    console.log(user)
+
     if (user === null) {
         return (
             <>
@@ -39,21 +58,30 @@ const App = () => {
     }
 
     return (
-        <div>
+        <div className='container'>
             <h2>blogs</h2>
-
+            
             <Notification />
 
             {user && <div>
                 <p>{user.name} logged in <button onClick={logout}>logout</button></p>
-                <Togglabel buttonLabel='create new blog' ref={blogFormRef}>
-                    <BlogForm blogFormRef={blogFormRef}/>
-                </Togglabel>
             </div>
             }
 
-            <BlogList user={user.username}/>
+            <div>
+            
+                <div>
+                    <Link to='/users'>users</Link>
+                    <Link to='/' style={{ padding: '10px' }}>Home</Link>
+                </div>
+
+                <Routes>
+                    <Route path='/users' element={<User />} />
+                    <Route path='/' element={<Home user={user}/>} />
+                </Routes>
+            </div>
         </div>
+        
     )
 }
 
