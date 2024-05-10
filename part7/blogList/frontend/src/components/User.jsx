@@ -1,41 +1,18 @@
-import { useEffect } from 'react'
-import { Table } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import { getUsers } from '../reducers/userReducer'
-import { Link } from 'react-router-dom'
+import ListGroup from 'react-bootstrap/ListGroup'
 
-const User = () => {
-    const dispatch = useDispatch()
-    const users = useSelector(state => state.users)
+const User = ({ user }) => {
 
-    useEffect(() => {
-        dispatch(getUsers())
-    }, [])
+    if (!user) return null
 
     return (
         <div>
-            <Table striped>
-                <thead>
-                    <tr>
-                        <th>Users</th>
-                        <th>blogs created</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users?.map(user => (
-                        <tr key={user.id}>
-                            <td>
-                                <Link to={`/users/${user.id}`}>
-                                    {user.username}
-                                </Link>
-                            </td>
-                            <td>
-                                {user.blogs.length}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+            <h1>{user.username}</h1>
+            <h3>added blogs</h3>
+            <ListGroup>
+                {
+                    user.blogs.map(blog => <ListGroup.Item key={blog.id}>{blog.title}</ListGroup.Item>)
+                }
+            </ListGroup>
         </div>
     )
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button, Form } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 
@@ -27,39 +28,42 @@ const BlogForm = ({ blogFormRef }) => {
     return (
         <>
             <h1>Create New</h1>
-            <form onSubmit={addBlog}>
-                <div>
-                title:
-                    <input
-                        type='text'
-                        value={title}
-                        name='Title'
-                        onChange={({ target }) => setTitle(target.value)}
-                        id='title-input'
+            <Form onSubmit={addBlog}>
+                <Form.Group controlId="formTitle" className="mb-3 mt-3">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Enter title"
+                    name="title"
+                    value={title}
+                    onChange={({ target }) => setTitle(target.value)}
                     />
-                </div>
-                <div>
-                author:
-                    <input
-                        type='text'
-                        value={author}
-                        name='Author'
-                        onChange={({ target }) => setAuthor(target.value)}
-                        id='author-input'
+                </Form.Group>
+
+                <Form.Group controlId="formAuthor" className="mb-3">
+                    <Form.Label>Author</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Enter author"
+                    name="author"
+                    value={author}
+                    onChange={({ target }) => setAuthor(target.value)}
                     />
-                </div>
-                <div>
-                url:
-                    <input
-                        type='text'
-                        value={url}
-                        name='Url'
-                        onChange={({ target }) => setUrl(target.value)}
-                        id='url-input'
+                </Form.Group>
+
+                <Form.Group controlId="formURL" className="mb-3">
+                    <Form.Label>URL</Form.Label>
+                    <Form.Control
+                    type="text"
+                    placeholder="Enter URL"
+                    name="URL"
+                    value={url}
+                    onChange={({ target }) => setUrl(target.value)}
                     />
-                </div>
-                <button type='submit' id='create-button'>create</button>
-            </form>
+                </Form.Group>
+
+                <Button variant="success" type='submit' id='create-button' className="mb-3">Create</Button>
+            </Form>
         </>
     )
 }
