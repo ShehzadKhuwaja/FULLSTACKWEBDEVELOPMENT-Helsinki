@@ -28,7 +28,7 @@ const BirthYearForm = ({ authors }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        editBirthYear({ variables: { name: selectedOption.value, setBornTo } })
+        await editBirthYear({ variables: { name: selectedOption.value, setBornTo } })
 
         setBorn('')
 

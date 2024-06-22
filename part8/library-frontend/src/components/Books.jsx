@@ -13,7 +13,11 @@ const Books = (props) => {
     fetchPolicy: 'no-cache'
   })
 
-  const getGenres = useQuery(GET_GENRES)
+  console.log(result.data)
+
+  const getGenres = useQuery(GET_GENRES, {
+    fetchPolicy: 'no-cache'
+  })
 
   if (result.loading) {
     return (
