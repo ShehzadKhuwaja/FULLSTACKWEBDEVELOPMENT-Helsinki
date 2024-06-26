@@ -13,6 +13,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import Login from "./components/LoginForm"
 import { Button } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
+import Recommendation from "./components/Recommendation"
 
 
 const App = () => {
@@ -52,6 +53,7 @@ const App = () => {
             {
               token && (
                 <>
+                <Nav.Link href="/recommendation">Recommendation</Nav.Link>
                 <Nav.Link href="/addBook">Add Book</Nav.Link>
                 <Nav.Link href="/birthyear">Set BirthYear</Nav.Link>
                 </>
@@ -71,6 +73,7 @@ const App = () => {
         <Route path="/addBook" element={<NewBook />} />
         <Route path="/birthyear" element={<BirthYearForm authors={authors} />} />
         <Route path="/login" element={<Login setToken={setToken}/>}/>
+        <Route path="/recommendation" element={<Recommendation />}/>
       </Routes>
 
     </div>
