@@ -40,13 +40,6 @@ const resolvers = {
         return uniqueGenres.map(doc => doc._id)
       }
     },
-    Author: {
-      bookCount: async ({ name }) => {
-        let books = await Book.find({}).populate('author')
-        books = books.filter(book => book.author.name === name)
-        return books.length
-      }
-    },
     Mutation: {
       addBook: async (root, args, context) => {
           const author = await Author.findOne({ name: args.author })
