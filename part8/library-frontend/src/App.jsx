@@ -7,13 +7,31 @@ import Container from 'react-bootstrap/Container'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import BirthYearForm from './components/BirthYearForm'
-import { ALL_AUTHORS } from "./queries"
-import { useQuery, useApolloClient } from "@apollo/client"
+import { ALL_AUTHORS, BOOK_ADDED, ALL_BOOKS } from "./queries"
+import { useQuery, useApolloClient, useSubscription } from "@apollo/client"
 import Spinner from 'react-bootstrap/Spinner'
 import Login from "./components/LoginForm"
 import { Button } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import Recommendation from "./components/Recommendation"
+
+// function that takes care of manipulating cache
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same book twice
+  const uniqByName = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    }
+  })
+}
 
 
 const App = () => {
@@ -24,6 +42,19 @@ const App = () => {
   const client = useApolloClient()
 
   const navigate = useNavigate()
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      console.log(data)
+      window.alert(`Book ${addedBook.title} added by ${addedBook.author.name}`)
+      console.log(client.cache)
+      updateCache(client.cache, { query: ALL_BOOKS, variables: { genre: '' } }, addedBook)
+    },
+    onError: ({error}) => {
+      console.error(error)
+    }
+  })
 
   if (result.loading) {
     return (

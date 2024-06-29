@@ -9,8 +9,7 @@ const Books = (props) => {
   const [selectedGenre, setSelectedGenre] = useState('')
 
   const result = useQuery(ALL_BOOKS,{
-    variables: { genre: selectedGenre },
-    fetchPolicy: 'no-cache'
+    variables: { genre: selectedGenre }
   })
 
   console.log(result.data)
@@ -34,18 +33,18 @@ const Books = (props) => {
     setSelectedGenre(genre)
   }
 
+  console.log(genres)
+
   return (
     <>
     <Form.Group controlId="genreSelect">
       <Form.Label style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Select Genre</Form.Label>
       <Form.Control as="select" value={selectedGenre} onChange={handleGenreChange} style={{ border: '1px solid #ccc', padding: '0.5rem', borderRadius: '0.25rem' }}>
         <option value=''>All Genres</option>
-        {genres? (
+        {genres && (
           genres.map((genre, index) => (
             <option key={index} value={genre}>{genre}</option>
           ))
-        ): (
-          <Spinner animation="grow" />
         )
         }
       </Form.Control>

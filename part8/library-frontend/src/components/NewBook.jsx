@@ -3,6 +3,7 @@ import { Form, FloatingLabel, Button, Badge, Row, Col } from 'react-bootstrap'
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS, GET_GENRES } from '../queries'
 import { useMutation, useQuery } from '@apollo/client'
 import { useNavigate } from "react-router-dom"
+import { updateCache } from '../App'
 
 const NewBook = (props) => {
   const [title, setTitle] = useState('')
@@ -12,7 +13,9 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([])
   const [errors, setErrors] = useState({})
 
-  const all_title = useQuery(ALL_BOOKS)
+  const all_title = useQuery(ALL_BOOKS,{
+    variables: { genre: '' }
+  })
 
   let existingTitles = all_title.data?.allBooks
   existingTitles = existingTitles?.map(book => book.title)
@@ -33,11 +36,14 @@ const NewBook = (props) => {
   }
 
   const [ addBook ] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }, { query: GET_GENRES }],
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: GET_GENRES }],
     awaitRefetchQueries: true,
     onError: (error) => {
       const messages = error.graphQLErrors.map(e => e.message).join('\n')
       console.log(messages)
+    },
+    update: (cache, response) => {
+      updateCache(cache, { query: ALL_BOOKS }, response.data.addBook)
     }
   })
 
